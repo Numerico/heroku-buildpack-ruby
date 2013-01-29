@@ -4,7 +4,7 @@
 $stdout.sync = true
 # 
 # Dir.chdir(ARGV[0])
-echo system "pwd"
+puts Dir.pwd
 # system "./compiletex #{ARGV[0]} #{ARGV[1]}"
 # 
 # $:.unshift File.expand_path("../../lib", __FILE__)
