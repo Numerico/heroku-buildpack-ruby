@@ -12,4 +12,4 @@ if pack = LanguagePack.detect(ARGV[0], ARGV[1])
   end
 end
 
-puts "soy un hijo de puta"
+ %x{ logger -p user.notice -t "slugc[$$]" "buildpack-ruby HDP! }
