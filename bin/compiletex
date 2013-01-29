@@ -14,7 +14,11 @@ PATH=$TEXLIVE_HOME/bin/x86_64-linux:$PATH
 PROFILE_D=$BUILD_DIR/.profile.d/texlive.sh
 
 # Output helpers
-source $BIN_DIR/utils
+#source $BIN_DIR/utils
+# Output helpers
+function build-step (){ echo "-----> $@"; }
+function build-warn (){ echo " !     $@"; }
+function build-info (){ echo "       $@"; }
 
 # Prepare the various paths
 mkdir -p $TEXLIVE_HOME
