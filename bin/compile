@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # # sync output
-# $stdout.sync = true
+$stdout.sync = true
 # 
 # Dir.chdir(ARGV[0])
 system "pwd"
