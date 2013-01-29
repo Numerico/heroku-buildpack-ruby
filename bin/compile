@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-`./compiletex #{ARGV[0]} #{ARGV[1]}`
+`BIN_DIR=$(cd $(dirname $0); pwd); BIN_DIR/compiletex #{ARGV[0]} #{ARGV[1]}`
 
 # sync output
 $stdout.sync = true
