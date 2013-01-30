@@ -51,7 +51,7 @@ if File.exist?(texlivecache+"/VERSION") then
     puts "Installing TeX Live #{version} from cache"
   end
   #cp -R $TEXLIVE_CACHE/* $TEXLIVE_HOME
-  system "cp -R ./#{texlivecache}/* ./#{texlivehome}"
+  system "cp -R #{texlivecache}/* #{texlivehome}"
 else
   if File.exist?(texlivecache+"/VERSION") then
     puts "Upgrading to TeX Live #{version}"
@@ -66,15 +66,15 @@ else
     end
   end
   #tar
-  system "tar xf #{texlivehome}/tarball.tar -C ./#{texlivehome}"
+  system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
-  system "rm -r ./#{texlivecache}/*"
+  system "rm -r #{texlivecache}/*"
   
   # Store a copy of it in the cache so it doesn't have to be fetched again
   #cp -R $TEXLIVE_HOME/* $TEXLIVE_CACHE
-  system "cp -R ./#{texlivehome}/* ./#{texlivecache}"
+  system "cp -R #{texlivehome}/* #{texlivecache}"
   
   # Store the version for later
   #echo $VERSION > $TEXLIVE_CACHE/VERSION
