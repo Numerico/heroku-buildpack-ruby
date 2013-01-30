@@ -43,14 +43,15 @@ puts "TexLive v."+version
 #
 texliveurl="#{texlivedomain}/texlive-#{version}.tar.gz"
 #
-if File.exist?(texlivecache+"/"+version) then
-  oldversion=File.read('#{texlivecache}/#{version}')
+if File.exist?(texlivecache+"/VERSION") then
+  oldversion=File.read("#{texlivecache}/VERSION")
   if version == oldversion then
     puts "Installing TeX Live #{version} from cache"
   end
-  #cp -R $TEXLIVE_CACHE/* $TEXLIVE_HOME TODO
+  #cp -R $TEXLIVE_CACHE/* $TEXLIVE_HOME
+  system "cp -R ./#{texlivecache}/* ./#{texlivehome}"
 else
-  if File.exist?(texlivecache+"/"+version) then
+  if File.exist?(texlivecache+"/VERSION") then
     puts "Upgrading to TeX Live #{version}"
   else
     puts "Fetching TeX Live #{version}"
@@ -64,18 +65,29 @@ else
   end
   #tar
   puts "texlivehome "+texlivehome.to_s
-  system("tar xf main/tarball.tar -C ./#{texlivehome}")
+  system "tar xf main/tarball.tar -C ./#{texlivehome}"
   
   # Make sure the cache is empty
-  #rm -rf $TEXLIVE_CACHE/*
+  #rm -rf $TEXLIVE_CACHE/* 
+  system "rm -r ./#{texlivecache}/*"
+  
   # Store a copy of it in the cache so it doesn't have to be fetched again
   #cp -R $TEXLIVE_HOME/* $TEXLIVE_CACHE
+  system "cp -R ./#{texlivehome}/* ./#{texlivecache}"
+  
   # Store the version for later
   #echo $VERSION > $TEXLIVE_CACHE/VERSION
   File.open(texlivecache+"/VERSION", 'w') {|f| f.write(version) }
-  
 end
 
+`which pdflatex`
+if !$?.success? then
+  puts "pdflatex NOT INSTALLED"
+end  
+
+# Set up the environment for runtimes now that compilation has finished
+#echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> $PROFILE_D
+`echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> #{profiled}`
 
 ##########################
 # comandante = Thread.new do
