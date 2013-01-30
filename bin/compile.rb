@@ -11,6 +11,21 @@ bdir=ARGV[0]
 cdir=ARGV[1]
 bind=Dir.pwd
 #
+texlivehome=bdir+"/.texlive"
+texlivecache=cdir+"/.texlive"
+path=texlivehome+"/bin/x86_64-linux"
+profiled=bdir+"/.profile.d/texlive.sh"
+# Prepare the various paths TODO if not exist
+if not File.exists?(texlivehome)
+Dir.mkdir(texlivehome, 0777)
+end
+if not File.exists?(texlivecache)
+Dir.mkdir(texlivecache, 0777)
+end
+if not File.exists?(File.dirname(profiled))
+Dir.mkdir(File.dirname(profiled), 0777)
+end
+#
 texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
 #
 http = Net::HTTP.new(texlivedomain, 443)
@@ -22,23 +37,18 @@ File.open('main/VERSION', 'w') {|f|
     f.write str
   end
 }
-
 version=File.read('main/VERSION')
 puts "TexLive v."+version
+
 #
 texliveurl="#{texlivedomain}/texlive-#{version}.tar.gz"
-texlivehome=bdir+"/.texlive"
-texlivecache=cdir+"/.texlive"
-path=texlivehome+"/bin/x86_64-linux"
-profiled=bdir+"/.profile.d/texlive.sh"
-# Prepare the various paths TODO if not exist
-Dir.mkdir(texlivehome, 0777)
-Dir.mkdir(texlivecache, 0777)
-Dir.mkdir(File.dirname(profiled), 0777)
 #
-if File.exist?(texlivecache+"/"+version) and version == `cat #{texlivecache}/#{version}` then
-  puts "Installing TeX Live #{version} from cache"
-  #cp -R $TEXLIVE_CACHE/* $TEXLIVE_HOME
+if File.exist?(texlivecache+"/"+version) then
+  oldversion=File.read('#{texlivecache}/#{version}')
+  if version == oldversion then
+    puts "Installing TeX Live #{version} from cache"
+  end
+  #cp -R $TEXLIVE_CACHE/* $TEXLIVE_HOME TODO
 else
   if File.exist?(texlivecache+"/"+version) then
     puts "Upgrading to TeX Live #{version}"
@@ -53,8 +63,8 @@ else
     end
   end
   #tar
-  `tar xzf -C #{texlivehome}`
-  
+  puts "texlivehome "+texlivehome.to_s
+  system("tar xf main/tarball.tar -C ./#{texlivehome}")
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/*
@@ -62,7 +72,7 @@ else
   #cp -R $TEXLIVE_HOME/* $TEXLIVE_CACHE
   # Store the version for later
   #echo $VERSION > $TEXLIVE_CACHE/VERSION
-  
+  File.open(texlivecache+"/VERSION", 'w') {|f| f.write(version) }
   
 end
 
