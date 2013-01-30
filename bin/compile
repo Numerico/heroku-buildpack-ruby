@@ -3,7 +3,7 @@
 # sync output
 $stdout.sync = true
 
-comandate = Thread.new do
+comandante = Thread.new do
 	system "./texcompile #{ARGV[0]} #{ARGV[1]}"
 end
 comandante.join                
