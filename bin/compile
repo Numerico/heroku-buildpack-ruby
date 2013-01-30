@@ -66,7 +66,7 @@ else
     end
   end
   #tar
-  system "tar xf main/tarball.tar -C ./#{texlivehome}"
+  system "tar xf #{texlivehome}/tarball.tar -C ./#{texlivehome}"
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
