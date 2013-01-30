@@ -17,18 +17,24 @@ texlivehome=bdir+"/.texlive"
 texlivecache=cdir+"/.texlive"
 path=texlivehome+"/bin/x86_64-linux"
 profiled=bdir+"/.profile.d/texlive.sh"
-# Prepare the various paths TODO if not exist
+pdfinfohome=bdir+"/.pdfinfo"
+pdfinfov="xpdfbin-linux-3.03.tar.gz"
+# Prepare the various paths
 if not File.exists?(texlivehome)
-Dir.mkdir(texlivehome, 0777)
+  Dir.mkdir(texlivehome, 0777)
 end
 if not File.exists?(texlivecache)
-Dir.mkdir(texlivecache, 0777)
+  Dir.mkdir(texlivecache, 0777)
 end
 if not File.exists?(File.dirname(profiled))
-Dir.mkdir(File.dirname(profiled), 0777)
+  Dir.mkdir(File.dirname(profiled), 0777)
+end
+if not File.exists?(pdfinfohome)
+  Dir.mkdir(pdfinfohome, 0777)
 end
 #
 texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
+pdfinfodomain="www.numerica.cl"
 #
 http = Net::HTTP.new(texlivedomain, 443)
 http.use_ssl = true
@@ -41,7 +47,6 @@ File.open("#{texlivehome}/VERSION", 'w') {|f|
 }
 version=File.read("#{texlivehome}/VERSION")
 puts "TexLive v."+version
-
 #
 texliveurl="#{texlivedomain}/texlive-#{version}.tar.gz"
 #
@@ -81,18 +86,32 @@ else
   File.open(texlivecache+"/VERSION", 'w') {|f| f.write(version) }
 end
 
+#pdfinfo
+if not File.exist?(pdfinfohome+"/"+pdfinfov)
+  http = Net::HTTP.new(pdfinfodomain, 80)
+  File.open("#{pdfinfohome}/#{pdfinfov}", 'w') {|f|
+    http.get("/#{pdfinfov}") do |str|
+      f.write str
+    end
+  }
+end
+system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
+
+
+
 # Set up the environment for runtimes now that compilation has finished
 #echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> $PROFILE_D
 #system "echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> #{profiled}"
-`echo '#!/bin/sh \n' >> #{profiled}`
+`echo '#!/bin/sh' >> #{profiled}`
 `echo 'PATH="$HOME/.texlive/bin/x86_64-linux:$PATH"' >> #{profiled}`
-puts File.read("#{profiled}")
+`echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
+#puts File.read("#{profiled}")
 #`export PATH=#{path}:$PATH`
 
-`which pdflatex`
-if !$?.success? then
-  puts "pdflatex NOT INSTALLED"
-end  
+# `which pdflatex`
+# if !$?.success? then
+  # puts "pdflatex NOT INSTALLED"
+# end  
 
 ##########################
 
