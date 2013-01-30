@@ -90,8 +90,9 @@ end
 
 # Set up the environment for runtimes now that compilation has finished
 #echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> $PROFILE_D
-`echo "export PATH=$HOME/.texlive/bin/x86_64-linux:#{path}" > #{profiled}`
+#`echo "export PATH=#{path}:$PATH" >> #{profiled}`
 puts File.read("#{profiled}")
+`export PATH=#{path}:$PATH`
 
 ##########################
 
