@@ -70,7 +70,7 @@ else
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
-  system "rm -r #{texlivecache}/*"
+  system "rm -rf #{texlivecache}/*"
   
   # Store a copy of it in the cache so it doesn't have to be fetched again
   #cp -R $TEXLIVE_HOME/* $TEXLIVE_CACHE
