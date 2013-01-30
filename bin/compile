@@ -11,7 +11,6 @@ bdir=ARGV[0]
 cdir=ARGV[1]
 #Dir.mkdir(ARGV[0], 0777)
 Dir.mkdir(ARGV[1], 0777)
-bind=File.dirname(__FILE__)#Dir.pwd
 #
 texlivehome=bdir+"/.texlive"
 texlivecache=cdir+"/.texlive"
@@ -88,7 +87,7 @@ end
 
 # Set up the environment for runtimes now that compilation has finished
 #echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> $PROFILE_D
-`echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> #{profiled}`
+`echo "export PATH=$HOME/.texlive/bin/x86_64-linux:#{path}" >> #{profiled}`
 
 ##########################
 
