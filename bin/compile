@@ -34,12 +34,12 @@ http = Net::HTTP.new(texlivedomain, 443)
 http.use_ssl = true
 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 #version=`curl #{texlivedomain}/VERSION -s`
-File.open('main/VERSION', 'w') {|f|
+File.open("#{texlivehome}/VERSION", 'w') {|f|
   http.get('/VERSION') do |str|
     f.write str
   end
 }
-version=File.read('main/VERSION')
+version=File.read("#{texlivehome}/VERSION")
 puts "TexLive v."+version
 
 #
@@ -60,13 +60,12 @@ else
   end
   
   #curl $TEXLIVE_URL -s -o - | tar xzf - -C $TEXLIVE_HOME
-  open('main/tarball.tar', 'w') do |local_file|
+  open("#{texlivehome}/tarball.tar", 'w') do |local_file|
     open("https://"+texliveurl) do |remote_file|
       local_file.write(Zlib::GzipReader.new(remote_file).read)
     end
   end
   #tar
-  puts "texlivehome "+texlivehome.to_s
   system "tar xf main/tarball.tar -C ./#{texlivehome}"
   
   # Make sure the cache is empty
