@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+system("aptitude search pdfinfo")
 
 require 'net/https'
 require 'open-uri'
@@ -66,7 +67,6 @@ else
   end
   #tar
   system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
-  system "ls -l #{texlivehome}"
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
@@ -75,12 +75,10 @@ else
   # Store a copy of it in the cache so it doesn't have to be fetched again
   #cp -R $TEXLIVE_HOME/* $TEXLIVE_CACHE
   system "cp -R #{texlivehome}/* #{texlivecache}"
-  system "ls -l #{texlivecache}"
   
   # Store the version for later
   #echo $VERSION > $TEXLIVE_CACHE/VERSION
   File.open(texlivecache+"/VERSION", 'w') {|f| f.write(version) }
-  system "ls -l #{texlivecache}"
 end
 
 # Set up the environment for runtimes now that compilation has finished
