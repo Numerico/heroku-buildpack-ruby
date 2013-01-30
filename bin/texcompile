@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# bin/compile <build-dir> <cache-dir>
 
 BUILD_DIR=$1
 CACHE_DIR=$2
@@ -13,13 +12,6 @@ TEXLIVE_CACHE=$CACHE_DIR/.texlive
 PATH=$TEXLIVE_HOME/bin/x86_64-linux:$PATH
 PROFILE_D=$BUILD_DIR/.profile.d/texlive.sh
 
-# Output helpers
-#source $BIN_DIR/utils
-# Output helpers
-function build-step (){ echo "-----> $@"; }
-function build-warn (){ echo " !     $@"; }
-function build-info (){ echo "       $@"; }
-
 # Prepare the various paths
 mkdir -p $TEXLIVE_HOME
 mkdir -p $TEXLIVE_CACHE
@@ -27,14 +19,14 @@ mkdir -p `dirname $PROFILE_D`
 
 if [ -f $TEXLIVE_CACHE/VERSION ] && (( $VERSION == `cat $TEXLIVE_CACHE/VERSION` )); then
     # Get TeX Live from the cache if possible
-    build-step "Installing TeX Live $VERSION from cache"
+    echo "Installing TeX Live $VERSION from cache"
     cp -R $TEXLIVE_CACHE/* $TEXLIVE_HOME
 else
     # Get TeX Live from S3 if necessary
     if [ -f "$TEXLIVE_CACHE/VERSION" ]; then
-        build-step "Upgrading to TeX Live $VERSION"
+        echo "Upgrading to TeX Live $VERSION"
     else
-        build-step "Fetching TeX Live $VERSION"
+        echo "Fetching TeX Live $VERSION"
     fi
 
     curl $TEXLIVE_URL -s -o - | tar xzf - -C $TEXLIVE_HOME
@@ -51,7 +43,7 @@ fi
 
 # Check for an essential binary to make sure it's installed
 if [ ! `which pdflatex` ]; then
-    build-warn "TeX Live installation failed"
+    echo "TeX Live installation failed"
     exit 1
 fi
 
