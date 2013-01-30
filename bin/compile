@@ -9,7 +9,7 @@ $stdout.sync = true
 
 bdir=ARGV[0]
 cdir=ARGV[1]
-Dir.mkdir(ARGV[0], 0777)
+#Dir.mkdir(ARGV[0], 0777)
 Dir.mkdir(ARGV[1], 0777)
 bind=Dir.pwd
 #
