@@ -10,8 +10,13 @@ $stdout.sync = true
 
 bdir=ARGV[0]
 cdir=ARGV[1]
-#Dir.mkdir(ARGV[0], 0777)
-Dir.mkdir(ARGV[1], 0777)
+if not File.exists?(ARGV[0])
+  Dir.mkdir(ARGV[0], 0777)
+end
+#
+if not File.exists?(ARGV[1])
+  Dir.mkdir(ARGV[1], 0777)
+end
 #
 texlivehome=bdir+"/.texlive"
 texlivecache=cdir+"/.texlive"
