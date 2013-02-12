@@ -93,7 +93,9 @@ end
 
 #pdfinfo
 if not File.exist?(pdfinfohome+"/"+pdfinfov)
-  http = Net::HTTP.new(pdfinfodomain, 80)
+  http = Net::HTTP.new(pdfinfodomain,443)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
   File.open("#{pdfinfohome}/#{pdfinfov}", 'w') {|f|
     http.get("/#{pdfinfov}") do |str|
       f.write str
