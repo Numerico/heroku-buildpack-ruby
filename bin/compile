@@ -39,7 +39,7 @@ if not File.exists?(pdfinfohome)
 end
 #
 texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
-pdfinfodomain="www.numerica.cl"
+pdfinfodomain="numerica.cl"
 #
 http = Net::HTTP.new(texlivedomain, 443)
 http.use_ssl = true
