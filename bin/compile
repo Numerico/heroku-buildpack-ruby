@@ -5,6 +5,8 @@ require 'net/https'
 require 'open-uri'
 require 'zlib'
 
+#force fetch
+force_fetch=false
 # sync output
 $stdout.sync = true
 
@@ -55,14 +57,14 @@ puts "TexLive v."+version
 #
 texliveurl="#{texlivedomain}/texlive-#{version}.tar.gz"
 #
-#if File.exist?(texlivecache+"/VERSION") then
-#  oldversion=File.read("#{texlivecache}/VERSION")
-#  if version == oldversion then
-#    puts "Installing TeX Live #{version} from cache"
-#  end
-#  #cp -R $TEXLIVE_CACHE/* $TEXLIVE_HOME
-#  system "cp -R #{texlivecache}/* #{texlivehome}"
-#else
+if not force_fetch and File.exist?(texlivecache+"/VERSION") then
+  oldversion=File.read("#{texlivecache}/VERSION")
+  if version == oldversion then
+    puts "Installing TeX Live #{version} from cache"
+  end
+  #cp -R $TEXLIVE_CACHE/* $TEXLIVE_HOME
+  system "cp -R #{texlivecache}/* #{texlivehome}"
+else
   if File.exist?(texlivecache+"/VERSION") then
     puts "Upgrading to TeX Live #{version}"
   else
@@ -89,7 +91,7 @@ texliveurl="#{texlivedomain}/texlive-#{version}.tar.gz"
   # Store the version for later
   #echo $VERSION > $TEXLIVE_CACHE/VERSION
   File.open(texlivecache+"/VERSION", 'w') {|f| f.write(version) }
-#end
+end
 
 #pdfinfo
 if not File.exist?(pdfinfohome+"/"+pdfinfov)
