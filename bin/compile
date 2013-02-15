@@ -85,7 +85,7 @@ else
   
   #pdfpages .texlive/texmf-dist/tex/latex
   open("#{texlivehome}/pdfpages.zip", 'wb') do |local_file|
-    local_file.print open("https://"+pdfpagesdomain+"/"+pdfpagesurl).read
+    local_file.print open("http://"+pdfpagesdomain+"/"+pdfpagesurl).read
   end
   #
   system "unzip #{texlivehome}/pdfpages.zip -d #{texlivehome}/texmf-dist/tex/latex"
