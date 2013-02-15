@@ -87,7 +87,7 @@ else
   http = Net::HTTP.new(pdfpagesdomain,443)
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
-  File.open("#{texlivehome}/texmf-dist/tex/latex"+pdfpagesurl, 'w') {|f|
+  File.open("#{texlivehome}/texmf-dist/tex/latex/"+pdfpagesurl, 'w') {|f|
     http.get("/#{pdfpagesurl}") do |str|
       f.write str
     end
