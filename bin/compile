@@ -85,7 +85,7 @@ else
   
   #pdfpages .texlive/texmf-dist/tex/latex
   http = Net::HTTP.new(pdfpagesdomain,80)
-  File.open("#{texlivehome}/pdfpages.zip", 'w') {|f|
+  File.open("#{texlivehome}/pdfpages.zip", 'wb') {|f|
     http.get(pdfpagesdomain+"/"+pdfpagesurl) do |str|
       f.write str
     end
