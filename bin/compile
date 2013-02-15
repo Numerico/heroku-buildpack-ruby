@@ -85,11 +85,11 @@ else
   
   #pdfpages
   pdfpageszip="#{texlivehome}/pdfpages.tds.zip"
-  if not File.file?(pdfpageszip) then
+  #if not File.file?(pdfpageszip) then
     open(pdfpageszip, 'wb') do |local_file|
       local_file.print open("http://"+pdfpagesdomain+"/"+pdfpagesurl).read
     end
-  end
+  #end
   #
   system "unzip #{pdfpageszip} *.sty -d #{texlivehome}/texmf-dist/tex/latex"
   
