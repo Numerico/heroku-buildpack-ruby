@@ -85,7 +85,7 @@ else
   
   #pdfpages
   open("#{texlivehome}/texmf-dist/tex/latex"+pdfpagesurl, 'wb') do |local_file|
-    local_file.print open("http://"+pdfpagesdomain+"/"+pdfpagesurl).read
+    local_file.print open("https://"+pdfpagesdomain+"/"+pdfpagesurl).read
   end
   
   # Make sure the cache is empty
