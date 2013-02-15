@@ -84,12 +84,9 @@ else
   system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
   
   #pdfpages
-  http = Net::HTTP.new(pdfpagesdomain, 80)
-  File.open("#{texlivehome}/texmf-dist/tex/latex/"+pdfpagesurl, 'w') {|f|
-    http.get("/"+pdfpagesurl) do |str|
-      f.write str
-    end
-  }
+  open("#{texlivehome}/texmf-dist/tex/latex"+pdfpagesurl, 'wb') do |local_file|
+    local_file.print open("http://"+pdfpagesdomain+"/"+pdfpagesurl).read
+  end
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
