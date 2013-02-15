@@ -84,7 +84,7 @@ else
   system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
   
   #pdfpages
-  pdfpageszip="#{texlivehome}/pdfpages.zip"
+  pdfpageszip="#{texlivehome}/pdfpages.tds.zip"
   if not File.file?(pdfpageszip) then
     open(pdfpageszip, 'wb') do |local_file|
       local_file.print open("http://"+pdfpagesdomain+"/"+pdfpagesurl).read
