@@ -42,9 +42,9 @@ if not File.exists?(pdfinfohome)
 end
 #
 texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
-pdfpagesdomain="mirrors.ctan.org"
-pdfpagesurl="install/macros/latex/contrib/pdfpages.tds.zip"
 pdfinfodomain="numerica.cl"
+pdfpagesdomain="numerica.cl"
+pdfpagesurl="pdfpages.sty"
 #
 http = Net::HTTP.new(texlivedomain, 443)
 http.use_ssl = true
@@ -84,14 +84,12 @@ else
   system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
   
   #pdfpages
-  pdfpageszip="#{texlivehome}/pdfpages.tds.zip"
-  #if not File.file?(pdfpageszip) then
-    open(pdfpageszip, 'wb') do |local_file|
-      local_file.print open("http://"+pdfpagesdomain+"/"+pdfpagesurl).read
+  http = Net::HTTP.new(pdfpagesdomain, 80)
+  File.open("#{texlivehome}/texmf-dist/tex/latex", 'w') {|f|
+    http.get("/"+pdfpagesurl) do |str|
+      f.write str
     end
-  #end
-  #
-  system "unzip #{pdfpageszip} *.sty -d #{texlivehome}/texmf-dist/tex/latex"
+  }
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
