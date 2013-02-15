@@ -6,7 +6,7 @@ require 'open-uri'
 require 'zlib'
 
 #force fetch
-force_fetch=false
+force_fetch=true
 # sync output
 $stdout.sync = true
 
@@ -26,6 +26,7 @@ path=texlivehome+"/bin/x86_64-linux"
 profiled=bdir+"/.profile.d/texlive.sh"
 pdfinfohome=bdir+"/.pdfinfo"
 pdfinfov="xpdfbin-linux-3.03.tar.gz"
+
 # Prepare the various paths
 if not File.exists?(texlivehome)
   Dir.mkdir(texlivehome, 0777)
@@ -41,6 +42,7 @@ if not File.exists?(pdfinfohome)
 end
 #
 texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
+pdfpagesurl="http://mirrors.ctan.org/macros/latex/contrib/pdfpages.zip"
 pdfinfodomain="numerica.cl"
 #
 http = Net::HTTP.new(texlivedomain, 443)
@@ -79,6 +81,14 @@ else
   end
   #tar
   system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
+  
+  #pdfpages .texlive/texmf-dist/tex/latex
+  open("#{texlivehome}/pdfpages.zip", 'w') do |local_file|
+    open(pdfpagesurl) do |remote_file|
+      local_file.write(Zlib::GzipReader.new(remote_file).read)
+    end
+  end
+  system "unzip #{texlivehome}/pdfpages.zip -d #{texlivehome}/texmf-dist/tex/latex"
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
