@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-system("aptitude search pdfinfo")
 
 require 'net/https'
 require 'open-uri'
@@ -7,6 +6,7 @@ require 'zlib'
 
 #force fetch
 force_fetch=true
+
 # sync output
 $stdout.sync = true
 
@@ -15,17 +15,22 @@ cdir=ARGV[1]
 if not File.exists?(ARGV[0])
   Dir.mkdir(ARGV[0], 0777)
 end
-#
 if not File.exists?(ARGV[1])
   Dir.mkdir(ARGV[1], 0777)
 end
 #
+
 texlivehome=bdir+"/.texlive"
 texlivecache=cdir+"/.texlive"
 path=texlivehome+"/bin/x86_64-linux"
 profiled=bdir+"/.profile.d/texlive.sh"
 pdfinfohome=bdir+"/.pdfinfo"
 pdfinfov="xpdfbin-linux-3.03.tar.gz"
+texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
+pdfinfodomain="numerica.cl"
+pdfpagesdomain="numerica.cl"
+pdfpagesurl="pdfpages.sty"
+#
 
 # Prepare the various paths
 if not File.exists?(texlivehome)
@@ -40,16 +45,11 @@ end
 if not File.exists?(pdfinfohome)
   Dir.mkdir(pdfinfohome, 0777)
 end
-#
-texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
-pdfinfodomain="numerica.cl"
-pdfpagesdomain="numerica.cl"
-pdfpagesurl="pdfpages.sty"
-#
+
+#version=`curl #{texlivedomain}/VERSION -s`
 http = Net::HTTP.new(texlivedomain, 443)
 http.use_ssl = true
 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-#version=`curl #{texlivedomain}/VERSION -s`
 File.open("#{texlivehome}/VERSION", 'w') {|f|
   http.get('/VERSION') do |str|
     f.write str
@@ -58,16 +58,20 @@ File.open("#{texlivehome}/VERSION", 'w') {|f|
 version=File.read("#{texlivehome}/VERSION")
 puts "TexLive v."+version
 #
+
 texliveurl="#{texlivedomain}/texlive-#{version}.tar.gz"
-#
+
 if not force_fetch and File.exist?(texlivecache+"/VERSION") then
   oldversion=File.read("#{texlivecache}/VERSION")
   if version == oldversion then
     puts "Installing TeX Live #{version} from cache"
   end
+  
   #cp -R $TEXLIVE_CACHE/* $TEXLIVE_HOME
   system "cp -R #{texlivecache}/* #{texlivehome}"
+
 else
+
   if File.exist?(texlivecache+"/VERSION") then
     puts "Upgrading to TeX Live #{version}"
   else
@@ -80,10 +84,11 @@ else
       local_file.write(Zlib::GzipReader.new(remote_file).read)
     end
   end
-  #tar
+  #un tar
   system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
   
-  #pdfpages
+  #pdfpages package required
+  puts "Downloading pdfpages..."
   http = Net::HTTP.new(pdfpagesdomain,443)
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
@@ -104,10 +109,12 @@ else
   # Store the version for later
   #echo $VERSION > $TEXLIVE_CACHE/VERSION
   File.open(texlivecache+"/VERSION", 'w') {|f| f.write(version) }
+
 end
 
 #pdfinfo
 if not File.exist?(pdfinfohome+"/"+pdfinfov)
+  puts "Downloading "+pdfinfov+"..."
   http = Net::HTTP.new(pdfinfodomain,443)
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
@@ -117,25 +124,23 @@ if not File.exist?(pdfinfohome+"/"+pdfinfov)
     end
   }
 end
+puts "Installing "+pdfinfov+"..."
 system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
-
+#
 
 
 # Set up the environment for runtimes now that compilation has finished
-#echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> $PROFILE_D
-#system "echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> #{profiled}"
 `echo '#!/bin/sh' >> #{profiled}`
 `echo 'PATH="$HOME/.texlive/bin/x86_64-linux:$PATH"' >> #{profiled}`
 `echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
-#puts File.read("#{profiled}")
-#`export PATH=#{path}:$PATH`
 
-# `which pdflatex`
-# if !$?.success? then
-  # puts "pdflatex NOT INSTALLED"
-# end  
+#hideous test
+`which pdflatex`
+if !$?.success? then
+  puts "pdflatex NOT INSTALLED"
+end  
 
-##########################
+###########Regular Rails Build-Pack###############
 
 $:.unshift File.expand_path("../../lib", __FILE__)
 require "language_pack"
