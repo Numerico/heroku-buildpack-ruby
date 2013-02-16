@@ -106,7 +106,7 @@ else
       f.write str
     end
   }
-  #`texhash`
+  `sudo texhash`
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
@@ -140,9 +140,7 @@ system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
 
 #make pdfinfo executable
 `echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
-#########
-`texhash`
-#########
+
 #hideous test
 `which pdflatex`
 if !$?.success? then
