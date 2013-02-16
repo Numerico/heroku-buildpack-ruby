@@ -75,9 +75,9 @@ if not force_fetch and File.exist?(texlivecache+"/VERSION") then
 else
 
   if File.exist?(texlivecache+"/VERSION") then
-    puts "Upgrading to TeX Live #{version}"
+    puts "Upgrading to TeX Live #{version}..."
   else
-    puts "Fetching TeX Live #{version}"
+    puts "Fetching TeX Live #{version}..."
   end
   
   # Set up the environment for runtimes before compilation has finished
@@ -140,7 +140,9 @@ system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
 
 #make pdfinfo executable
 `echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
-
+#########
+`texhash`
+#########
 #hideous test
 `which pdflatex`
 if !$?.success? then
