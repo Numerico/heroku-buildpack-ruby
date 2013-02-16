@@ -106,7 +106,7 @@ else
       f.write str
     end
   }
-  `texhash`
+  #`texhash`
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
