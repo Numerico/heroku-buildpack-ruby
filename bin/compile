@@ -30,7 +30,7 @@ texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
 pdfinfodomain="numerica.cl"
 pdfpagesdomain="numerica.cl"
 pdfpagesurl="pdfpages.sty"
-pdfpagesdir="#{texlivehome}/texmf/tex/latex/pdfpages"
+pdfpagesdir="#{texlivehome}/texmf-dist/tex/latex/pdfpages"
 pdfpagesdirabbrv="#{texlivehome}/texmf"
 #
 
@@ -106,7 +106,6 @@ else
       f.write str
     end
   }
-  `sudo texhash`
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
