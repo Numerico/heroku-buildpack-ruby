@@ -100,7 +100,7 @@ else
       f.write str
     end
   }
-  `texhash #{pdfpagesdirabbrv}`
+  `texhash`
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
