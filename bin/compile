@@ -30,6 +30,8 @@ texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
 pdfinfodomain="numerica.cl"
 pdfpagesdomain="numerica.cl"
 pdfpagesurl="pdfpages.sty"
+pdfpagesdir="#{texlivehome}/texmf/tex/latex/pdfpages"
+pdfpagesdirabbrv="#{texlivehome}/texmf"
 #
 
 # Prepare the various paths
@@ -88,15 +90,17 @@ else
   system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
   
   #pdfpages package required
+  `mkdir -p #{pdfpagesdir}`
   puts "Downloading pdfpages..."
   http = Net::HTTP.new(pdfpagesdomain,443)
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
-  File.open("#{texlivehome}/texmf-dist/tex/latex/"+pdfpagesurl, 'w') {|f|
+  File.open("#{pdfpagesdir}/pdfpages.sty", 'w') {|f|
     http.get("/#{pdfpagesurl}") do |str|
       f.write str
     end
   }
+  `texhash #{pdfpagesdirabbrv}`
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
