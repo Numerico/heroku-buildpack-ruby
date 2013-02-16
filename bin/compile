@@ -80,6 +80,9 @@ else
     puts "Fetching TeX Live #{version}"
   end
   
+  # Set up the environment for runtimes before compilation has finished
+  `echo '#!/bin/sh' > #{profiled}`
+  
   #curl $TEXLIVE_URL -s -o - | tar xzf - -C $TEXLIVE_HOME
   open("#{texlivehome}/tarball.tar", 'w') do |local_file|
     open("https://"+texliveurl) do |remote_file|
@@ -88,6 +91,9 @@ else
   end
   #un tar
   system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
+  
+  #make LaTeX executable
+  `echo 'PATH="$HOME/.texlive/bin/x86_64-linux:$PATH"' >> #{profiled}`
   
   #pdfpages package required
   `mkdir -p #{pdfpagesdir}`
@@ -132,10 +138,7 @@ puts "Installing "+pdfinfov+"..."
 system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
 #
 
-
-# Set up the environment for runtimes now that compilation has finished
-`echo '#!/bin/sh' >> #{profiled}`
-`echo 'PATH="$HOME/.texlive/bin/x86_64-linux:$PATH"' >> #{profiled}`
+#make pdfinfo executable
 `echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
 
 #hideous test
