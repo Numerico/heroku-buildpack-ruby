@@ -4,6 +4,8 @@ require 'net/https'
 require 'open-uri'
 require 'zlib'
 
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+
 #force fetch
 force_fetch=true
 
