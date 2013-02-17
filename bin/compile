@@ -103,7 +103,7 @@ else
     end
   end
   system "tar xf #{texlivehome}/texlive-latex-recommended.tar.gz -C #{texlivehome} ./usr/share/texmf-texlive/tex/latex"
-  `cp -R #{texlivehome}/usr/share/texmf-texlive/tex/latex/* #{texlivehome}/texmf-dist/tex/latex/`
+  `cp -R #{texlivehome}/usr/share/texmf-texlive/tex/latex/* #{texlivehome}/texmf-local/tex/latex/`
   `chmod -R 777 #{texlivehome}`
   
   # Make sure the cache is empty
