@@ -30,10 +30,8 @@ pdfinfohome=bdir+"/.pdfinfo"
 pdfinfov="xpdfbin-linux-3.03.tar.gz"
 texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
 pdfinfodomain="numerica.cl"
-#
 pdfpagesdomain="numerica.cl"
 pdfpagesurl="texlive-latex-recommended.tar.gz"
-latexpackagedir="#{texlivehome}/texmf-dist/tex/latex/"
 #
 
 # Prepare the various paths
@@ -105,7 +103,7 @@ else
     end
   end
   system "tar xf #{texlivehome}/texlive-latex-recommended.tar.gz -C #{texlivehome} ./usr/share/texmf-texlive/tex/latex"
-  `cp -R ./usr/share/texmf-texlive/tex/latex/* #{latexpackagedir}`
+  `cp -R #{texlivehome}/usr/share/texmf-texlive/tex/latex/* #{texlivehome}/texmf-dist/tex/latex/`
   
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
