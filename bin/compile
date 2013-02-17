@@ -105,8 +105,8 @@ else
   system "tar xf #{texlivehome}/texlive-latex-recommended.tar.gz -C #{texlivehome} ./usr/share/texmf-texlive/tex/latex"
   `cp -R #{texlivehome}/usr/share/texmf-texlive/tex/latex/* #{texlivehome}/texmf-local/tex/latex/`
   `chmod -R 777 #{texlivehome}`
-  system "mktexls"
-  
+  `texhash >> #{profiled}`
+    
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
   system "rm -rf #{texlivecache}/*"
