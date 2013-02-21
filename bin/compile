@@ -7,7 +7,7 @@ require 'zlib'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 #force fetch
-force_fetch=true
+force_fetch=false
 
 # sync output
 $stdout.sync = true
@@ -132,19 +132,14 @@ if not File.exist?(pdfinfohome+"/"+pdfinfov)
       f.write str
     end
   }
+  puts "Installing "+pdfinfov+"..."
+  system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
 end
-puts "Installing "+pdfinfov+"..."
-system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
 #
 
 #make pdfinfo executable
 `echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
 
-#hideous test
-`which pdflatex`
-if !$?.success? then
-  puts "pdflatex NOT INSTALLED"
-end  
 
 ###########Regular Rails Build-Pack###############
 
