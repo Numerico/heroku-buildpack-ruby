@@ -7,7 +7,7 @@ require 'zlib'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 #force fetch
-force_fetch=false
+force_fetch=true
 
 # sync output
 $stdout.sync = true
@@ -100,20 +100,20 @@ else
   `cp -R #{texlivehome}/usr/share/texmf-texlive/tex/latex/* #{texlivehome}/texmf-local/tex/latex/`
   `chmod -R 777 #{texlivehome}`
   
- 	#pdfinfo
-	if not File.exist?(pdfinfohome+"/"+pdfinfov)
-	  puts "Downloading "+pdfinfov+"..."
-	  http = Net::HTTP.new(pdfinfodomain,443)
-	  http.use_ssl = true
-	  http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
-	  File.open("#{pdfinfohome}/#{pdfinfov}", 'w') {|f|
-	    http.get("/#{pdfinfov}") do |str|
-	      f.write str
-	    end
-	  }
-	end
-	puts "Installing "+pdfinfov+"..."
-	system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
+#pdfinfo
+if not File.exist?(pdfinfohome+"/"+pdfinfov)
+  puts "Downloading "+pdfinfov+"..."
+  http = Net::HTTP.new(pdfinfodomain,443)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
+  File.open("#{pdfinfohome}/#{pdfinfov}", 'w') {|f|
+    http.get("/#{pdfinfov}") do |str|
+      f.write str
+    end
+  }
+end
+puts "Installing "+pdfinfov+"..."
+system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
     
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
