@@ -80,9 +80,6 @@ else
     puts "Fetching TeX Live #{version}..."
   end
   
-  # Set up the environment for runtimes before compilation has finished
-  `echo '#!/bin/sh' > #{profiled}`
-  
   #curl $TEXLIVE_URL -s -o - | tar xzf - -C $TEXLIVE_HOME
   open("#{texlivehome}/tarball.tar", 'w') do |local_file|
     open("https://"+texliveurl) do |remote_file|
@@ -91,9 +88,6 @@ else
   end
   #un tar
   system "tar xf #{texlivehome}/tarball.tar -C #{texlivehome}"
-  
-  #make LaTeX executable
-  `echo 'PATH="$HOME/.texlive/bin/x86_64-linux:$PATH"' >> #{profiled}`
   
   #pdfpages package required
   puts "Downloading pdfpages..."
@@ -105,7 +99,6 @@ else
   system "tar xf #{texlivehome}/texlive-latex-recommended.tar.gz -C #{texlivehome} ./usr/share/texmf-texlive/tex/latex"
   `cp -R #{texlivehome}/usr/share/texmf-texlive/tex/latex/* #{texlivehome}/texmf-local/tex/latex/`
   `chmod -R 777 #{texlivehome}`
-  `echo 'texhash' >> #{profiled}`
   
  	#pdfinfo
 	if not File.exist?(pdfinfohome+"/"+pdfinfov)
@@ -121,9 +114,6 @@ else
 	end
 	puts "Installing "+pdfinfov+"..."
 	system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
-	
-	#make pdfinfo executable
-	`echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
     
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
@@ -139,6 +129,15 @@ else
 
 end
 #
+
+# Set up the environment for runtimes before compilation has finished
+`echo '#!/bin/sh' > #{profiled}`
+#make LaTeX executable
+`echo 'PATH="$HOME/.texlive/bin/x86_64-linux:$PATH"' >> #{profiled}`
+#include pdfpages
+`echo 'texhash' >> #{profiled}`
+#make pdfinfo executable
+`echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
 
 ###########Regular Rails Build-Pack###############
 
