@@ -107,7 +107,7 @@ else
   `chmod -R 777 #{texlivehome}`
   `echo 'texhash' >> #{profiled}`
   
-  #pdfinfo
+ 	#pdfinfo
 	if not File.exist?(pdfinfohome+"/"+pdfinfov)
 	  puts "Downloading "+pdfinfov+"..."
 	  http = Net::HTTP.new(pdfinfodomain,443)
@@ -121,6 +121,9 @@ else
 	end
 	puts "Installing "+pdfinfov+"..."
 	system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
+	
+	#make pdfinfo executable
+	`echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
     
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
@@ -136,15 +139,6 @@ else
 
 end
 #
-
-#make pdfinfo executable
-`echo 'PATH="$HOME/.pdfinfo/xpdfbin-linux-3.03/bin64:$PATH"' >> #{profiled}`
-
-#hideous test
-`which pdflatex`
-if !$?.success? then
-  puts "pdflatex NOT INSTALLED"
-end  
 
 ###########Regular Rails Build-Pack###############
 
