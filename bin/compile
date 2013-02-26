@@ -27,6 +27,7 @@ texlivecache=cdir+"/.texlive"
 path=texlivehome+"/bin/x86_64-linux"
 profiled=bdir+"/.profile.d/texlive.sh"
 pdfinfohome=bdir+"/.pdfinfo"
+pdfinfocache=cdir+"/.pdfinfo"
 pdfinfov="xpdfbin-linux-3.03.tar.gz"
 texlivedomain="heroku-buildpack-tex.s3.amazonaws.com"
 pdfinfodomain="numerica.cl"
@@ -99,21 +100,6 @@ else
   system "tar xf #{texlivehome}/texlive-latex-recommended.tar.gz -C #{texlivehome} ./usr/share/texmf-texlive/tex/latex"
   `cp -R #{texlivehome}/usr/share/texmf-texlive/tex/latex/* #{texlivehome}/texmf-local/tex/latex/`
   `chmod -R 777 #{texlivehome}`
-  
-#pdfinfo
-if not File.exist?(pdfinfohome+"/"+pdfinfov)
-  puts "Downloading "+pdfinfov+"..."
-  http = Net::HTTP.new(pdfinfodomain,443)
-  http.use_ssl = true
-  http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
-  File.open("#{pdfinfohome}/#{pdfinfov}", 'w') {|f|
-    http.get("/#{pdfinfov}") do |str|
-      f.write str
-    end
-  }
-end
-puts "Installing "+pdfinfov+"..."
-system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
     
   # Make sure the cache is empty
   #rm -rf $TEXLIVE_CACHE/* 
@@ -129,6 +115,26 @@ system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
 
 end
 #
+#pdfinfo
+if force_fetch or not File.exist?(pdfinfohome+"/"+pdfinfov) then
+  puts "Downloading "+pdfinfov+"..."
+  http = Net::HTTP.new(pdfinfodomain,443)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
+  File.open("#{pdfinfohome}/#{pdfinfov}", 'w') {|f|
+    http.get("/#{pdfinfov}") do |str|
+      f.write str
+    end
+  }
+  puts "Installing "+pdfinfov+"..."
+  system "tar xzf #{pdfinfohome}/#{pdfinfov} -C #{pdfinfohome}"
+  #cache
+  system "rm -rf #{pdfinfocache}/*"
+  system "cp -R #{pdfinfohome}/* #{pdfinfocache}"
+else
+  system "cp -R #{pdfinfocache}/* #{pdfinfohome}"
+  puts "pdfindfo installed from cache"
+end
 
 # Set up the environment for runtimes before compilation has finished
 `echo '#!/bin/sh' > #{profiled}`
