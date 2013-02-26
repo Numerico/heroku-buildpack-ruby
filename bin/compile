@@ -48,6 +48,9 @@ end
 if not File.exists?(pdfinfohome)
   Dir.mkdir(pdfinfohome, 0777)
 end
+if not File.exists?(pdfinfocache)
+  Dir.mkdir(pdfinfocache, 0777)
+end
 
 #version=`curl #{texlivedomain}/VERSION -s`
 http = Net::HTTP.new(texlivedomain, 443)
