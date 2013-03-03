@@ -119,7 +119,7 @@ else
 end
 #
 #pdfinfo
-if force_fetch or not File.file?(pdfinfohome+"/"+pdfinfov) then
+if force_fetch or not File.file?(pdfinfocache+"/"+pdfinfov) then
   puts "Downloading "+pdfinfov+"..."
   http = Net::HTTP.new(pdfinfodomain,443)
   http.use_ssl = true
