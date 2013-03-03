@@ -7,7 +7,7 @@ require 'zlib'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 #force fetch
-force_fetch=true
+force_fetch=false
 
 # sync output
 $stdout.sync = true
